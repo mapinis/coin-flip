@@ -4,7 +4,7 @@ import './App.css';
 class Button extends Component {
   constructor(props){
     super(props);
-    this.state = {buttonText: props.buttonText, clickedText: props.clickedText, clicked: false};
+    this.state = {clicked: false};
   }
 
   click(e) {
@@ -14,7 +14,7 @@ class Button extends Component {
   render() {
     return (
       <button onClick = {this.click.bind(this)} className={this.state.clicked ? "clicked": "unclicked"}>
-        {this.state.clicked ? this.state.clickedText : this.state.buttonText}
+        {this.state.clicked ? this.props.clickedText : this.props.buttonText}
       </button>
     );
   }
@@ -22,6 +22,7 @@ class Button extends Component {
 }
 
 class App extends Component {
+
   render() {
 
     return (
