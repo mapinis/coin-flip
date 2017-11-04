@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 
-// const Header = ({text}) => <h1>{text.length}</h1>
-
 class Button extends Component {
   constructor(props){
     super(props);
@@ -24,33 +22,10 @@ class Button extends Component {
 }
 
 class App extends Component {
-  constructor(props){
-    super(props)
-    this.state = {counter:1};
-  }
-
-  onIncrement(e){
-    this.setState(s => ({counter: s.counter + 1}))
-  }
-
-  onDecrement(e){
-    this.setState(s => ({counter: s.counter - 1}))
-  }
-
-  onReset(e){
-    this.setState({counter:1});
-  }
-
   render() {
-    // const headers = ["This", "Is", "A", "Test"]
 
     return (
       <div className="App">
-        {/*
-        <h1>{this.state.counter}</h1>
-        <button onClick={this.onIncrement.bind(this)}>+</button>
-        <button onClick={this.onDecrement.bind(this)}>-</button>
-        <button onClick={() => this.onReset()}>1</button> */}
         <Button buttonText="ready" clickedText="waiting..." />
         <Button buttonText="click me" clickedText="clicked" />
       </div>
