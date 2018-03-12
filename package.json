@@ -1,16 +1,25 @@
 {
   "name": "coin-flip",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-scripts": "1.0.16"
-  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapinis/coin-flip.git"
+  },
+  "author": "Mark Apinis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mapinis/coin-flip/issues"
+  },
+  "homepage": "https://github.com/mapinis/coin-flip#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "socket.io": "^2.0.4",
+    "yarn": "^1.5.1"
   }
 }
