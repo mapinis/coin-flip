@@ -1,19 +1,21 @@
 import React, { Component } from "react";
+import socketIOClient from "socket.io-client";
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
       gameID: props.gameID,
-      socket: props.socket,
+      socket: null,
       me: null,
-      emeny: null
+      enemy: null
     };
   }
 
   componentDidMount() {
-    //console.log(this.state.socket)
-    this.state.socket.emit(
+    const socket = socketIOClient("")
+    this.setState(s => ({socket: socket}));
+    socket.emit(
       "joinGame",
       { gameID: this.state.gameID },
       data => {
@@ -33,7 +35,9 @@ class Game extends Component {
     return (
       <div className="Game">
         <p>GameID: {this.state.gameID}</p>
-        <p>PlayerID: {this.state.socket.id}</p>
+        {this.state.socket && (
+          <p>PlayerID: {this.state.socket.id}</p>
+        )}
         {this.state.me && (
           <div className="me">
             <p>Me Ready: {this.state.me.ready.toString()}</p>

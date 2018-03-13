@@ -2,44 +2,21 @@ const app = require("express")();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
-
 const port = process.env.PORT || 8080;
 app.use(require("morgan")("dev"));
-app.use(require("body-parser").json());
 
 let games = [];
 
-app.post("/api/join", (req, res) => {
+app.get("/api/validate/:gameID", (req, res) => {
   let found = false;
-  console.log(req.bod)
-  for (game of games) {
-    if (game.id == req.body.gameID) {
-      found = true;
-      if (game.players.length > 1) {
-        console.log("full");
-        res.status(403).send({ error: "full" });
-      } else {
-        if (game.players.length == 1) {
-          game.players.push({
-            ready: false,
-            heads: !game.players[0].heads,
-            id: req.body.playerID
-          });
-        } else {
-          game.players.push({
-            ready: false,
-            heads: true,
-            id: req.body.playerID
-          });
-        }
-
-        res.status(200).send({ id: game.players[game.players.length - 1].id });
-      }
+  const game = games.filter(game => game.id == req.params.gameID)[0];
+  if (game) {
+    if (game.players.length > 1) {
+      res.status(403).send({ error: "full" });
+    } else {
+      res.status(200).send({ success: "game exists and has space"});
     }
-  }
-
-  if (!found) {
-    console.log("not found");
+  } else {
     res.status(404).send({ error: "not found" });
   }
 });
@@ -56,7 +33,7 @@ app.get("/api/create", (req, res) => {
     players: []
   });
 
-  res.status(200).send({ gameID: games[games.length - 1].id });
+  res.status(200).send({ newGameID: games[games.length - 1].id });
 });
 
 io.on("connection", socket => {
@@ -64,18 +41,34 @@ io.on("connection", socket => {
 
   socket.on("joinGame", (data, callback) => {
     const game = games.filter(game => game.id == data.gameID)[0];
-    console.log(game)
     if(game) {
-      const player = game.players.filter(player => player.id == socket.id)[0];
-      console.log(player)
-      if(player) {
-        conslone.log("User is joining game " + game.id);
+      if (game.players.length > 1) {
+        console.error("Game is full, but was validated")
+      } else {
+        if (game.players.length == 1) {
+          game.players.push({
+            ready: false,
+            heads: !game.players[0].heads,
+            id: socket.id
+          });
+        } else {
+          game.players.push({
+            ready: false,
+            heads: Math.random() > 0.5, // Maybe there will be the ability to choose side
+            id: socket.id
+          });
+        }
+
+        console.log("A user has joined a game");
         socket.join(game.id);
+
         callback({
-          ready: player.ready,
-          heads: player.heads
-        });
+          ready: false,
+          heads: game.players[game.players.length - 1].heads
+        })
       }
+    } else {
+      console.error("Game does not exist, but was validated")
     }
   });
 });
