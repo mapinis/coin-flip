@@ -13,27 +13,31 @@ app.get("/api/join/:gameID", (req, res) => {
     if (game.id == req.params.gameID) {
       found = true;
       if (game.players.length > 1) {
-        res.send({ error: "full" });
+        console.log("full");
+        res.status(403).send({ error: "full" });
       } else {
         if (game.players.length == 1) {
           game.players.push({
             ready: false,
-            heads: !game.players[0].heads
+            heads: !game.players[0].heads,
+            id: generateID()
           });
         } else {
           game.players.push({
             ready: false,
-            heads: null
+            heads: true,
+            id: generateID()
           });
         }
 
-        res.send({ game: game });
+        res.status(200).send({ id: game.players[game.players.length - 1].id });
       }
     }
   }
 
   if (!found) {
-    res.send({ error: "not found" });
+    console.log("not found");
+    res.status(404).send({ error: "not found" });
   }
 });
 
@@ -46,7 +50,7 @@ app.get("/api/create", (req, res) => {
     players: []
   });
 
-  res.send({ gameID: games[games.length - 1].id });
+  res.status(200).send({ gameID: games[games.length - 1].id });
 });
 
 server.listen(port, "0.0.0.0", () => {

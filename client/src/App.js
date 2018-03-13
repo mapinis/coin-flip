@@ -31,7 +31,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      game: "",
+      playerID: '',
       gameID: ''
     }
   }
@@ -53,7 +53,10 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
-  joinGame() {
+  joinGame(event) {
+    if(event) {
+      event.preventDefault();
+    }
     this.callAPI('/api/join/' + this.state.gameID)
       .then(res => 
         {
@@ -62,8 +65,8 @@ class App extends Component {
             // Error handling to come later
           }
 
-          console.log(res.game)
-          this.setState({ game: res.game });
+          console.log(res.id)
+          this.setState({ playerID: res.id });
         })
       .catch(err => console.log(err));
   }
@@ -72,7 +75,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        {!this.state.game && 
+        {!this.state.playerID && 
           <div className="index">
             <button onClick={this.createGame.bind(this)}>Create Game</button>
             <form onSubmit={this.joinGame.bind(this)}>
@@ -83,8 +86,8 @@ class App extends Component {
               <input type="submit" value="Submit" />
             </form>
           </div>}
-        {this.state.game &&
-          <Game game={this.state.game} />
+        {this.state.playerID &&
+          <Game gameID={this.state.gameID} playerID={this.state.playerID} />
         }
       </div>
     );
