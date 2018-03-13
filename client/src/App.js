@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
 
-class Button extends Component {
+import Game from "./components/Game.js";
+
+/*class Button extends Component {
   constructor(props){
     super(props);
     this.state = {clicked: false};
@@ -19,16 +21,71 @@ class Button extends Component {
     );
   }
 
-}
+}*/
+
+/*<Button buttonText="ready" clickedText="waiting..." />
+        <Button buttonText="click me" clickedText="clicked" />*/
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      game: "",
+      gameID: ''
+    }
+  }
+
+  callAPI = async (url) => {
+    const response = await fetch(url);
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  }
+
+  createGame() {
+    this.callAPI('/api/create')
+      .then(res => {
+        this.setState({gameID: res.gameID});
+        this.joinGame.bind(this)();})
+      .catch(err => console.log(err));
+  }
+
+  joinGame() {
+    this.callAPI('/api/join/' + this.state.gameID)
+      .then(res => 
+        {
+          if(res.error) {
+            console.log(res.error);
+            // Error handling to come later
+          }
+
+          console.log(res.game)
+          this.setState({ game: res.game });
+        })
+      .catch(err => console.log(err));
+  }
 
   render() {
 
     return (
       <div className="App">
-        <Button buttonText="ready" clickedText="waiting..." />
-        <Button buttonText="click me" clickedText="clicked" />
+        {!this.state.game && 
+          <div className="index">
+            <button onClick={this.createGame.bind(this)}>Create Game</button>
+            <form onSubmit={this.joinGame.bind(this)}>
+              <label>
+                Game ID:
+                <input type="text" value={this.state.gameID} onChange={(event) => {this.setState({ gameID: event.target.value })}}/>
+              </label>
+              <input type="submit" value="Submit" />
+            </form>
+          </div>}
+        {this.state.game &&
+          <Game game={this.state.game} />
+        }
       </div>
     );
   }
