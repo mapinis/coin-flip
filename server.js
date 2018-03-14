@@ -94,14 +94,27 @@ io.on("connection", socket => {
         if (player.id == socket.id) {
           player.ready = !player.ready;
           callback();
-          console.log("User in " + game.id + " changed ready state")
+          console.log("User in " + game.id + " changed ready state");
         } else {
           io.to(player.id).emit("enemyReady", null);
-          console.log("Enemy in " + game.id + " has been notified of ready state change")
+          console.log(
+            "Enemy in " + game.id + " has been notified of ready state change"
+          );
         }
       }
 
-      // Check if both are ready and then flip coin
+      if (game.players[0].ready && game.players[1].ready) {
+        // Time to see who wins
+        io.to(game.id).emit("flipping", null);
+        headsWin = Math.random > 0.5;
+        console.log((headsWin ? "heads" : "tails") + " has won in " + game.id);
+        io.to(game.id).emit("winDecided", headsWin);
+        for (player of game.players) {
+          if (player.heads == headsWin) {
+            io.to(player.id).emit("winStatus", true);
+          }
+        }
+      }
     }
   });
 });

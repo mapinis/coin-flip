@@ -40,7 +40,7 @@ class App extends Component {
           console.log(res.error);
           // Error handling to come later
         } else if (res.success) {
-          this.setState(s => ({gameID: s.inputtedID}));
+          this.setState(s => ({ gameID: s.inputtedID }));
         }
       })
       .catch(err => console.log(err));
@@ -67,9 +67,7 @@ class App extends Component {
             </form>
           </div>
         )}
-        {this.state.gameID &&(
-          <Game gameID={this.state.gameID}/>
-        )}
+        {this.state.gameID && <Game gameID={this.state.gameID} />}
       </div>
     );
   }

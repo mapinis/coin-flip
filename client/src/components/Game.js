@@ -8,7 +8,10 @@ class Game extends Component {
       gameID: props.gameID,
       socket: null,
       me: null,
-      enemy: null
+      enemy: null,
+      flipping: false,
+      winner: "",
+      winStatus: null
     };
   }
 
@@ -42,12 +45,24 @@ class Game extends Component {
           ...s.enemy,
           ready: !s.enemy.ready
         }
-      }))
+      }));
+    });
+
+    socket.on("flipping", () => {
+      this.setState({ flipping: true });
+    });
+
+    socket.on("winDecided", headsWin => {
+      this.setState({ winner: headsWin ? "heads" : "tails" });
+    });
+
+    socket.on("winStatus", status => {
+      this.setState({ winStatus: status });
     });
   }
 
   ready() {
-    this.state.socket.emit("ready", {gameID: this.state.gameID}, () => {
+    this.state.socket.emit("ready", { gameID: this.state.gameID }, () => {
       this.setState(s => ({
         me: {
           ...s.me,
@@ -65,16 +80,20 @@ class Game extends Component {
         {this.state.me && (
           <div className="me">
             <p>Me Ready: {this.state.me.ready.toString()}</p>
-            <button onClick={this.ready.bind(this)}>Ready</button>
-            <p>Me Heads: {this.state.me.heads.toString()}</p>
+            <p>Me: {this.state.me.heads ? "heads" : "tails"}</p>
           </div>
         )}
         {this.state.enemy && (
           <div className="enemy">
             <p>Enemy Ready: {this.state.enemy.ready.toString()}</p>
-            <p>Enemy Heads: {this.state.enemy.heads.toString()}</p>
+            <p>Enemy: {this.state.enemy.heads ? "heads" : "tails"}</p>
           </div>
         )}
+        {!this.state.flipping && (
+          <button onClick={this.ready.bind(this)}>Ready</button>
+        )}
+        {this.state.winner && <h2>Winner: {this.state.winner}</h2>}
+        {this.state.winStatus && <h1>Winner</h1>}
       </div>
     );
   }
