@@ -103,7 +103,7 @@ io.on("connection", socket => {
         }
       }
 
-      if (game.players[0].ready && game.players[1].ready) {
+      if (game.players[0].ready && game.players[1] && game.players[1].ready) {
         // Time to see who wins
         io.to(game.id).emit("flipping", null);
         headsWin = Math.random > 0.5;
