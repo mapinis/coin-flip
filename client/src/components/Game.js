@@ -13,31 +13,35 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    const socket = socketIOClient("")
-    this.setState(s => ({socket: socket}));
-    socket.emit(
-      "joinGame",
-      { gameID: this.state.gameID },
-      data => {
-        if (data) {
-          this.setState({
-            me: {
-              ready: data.ready,
-              heads: data.heads
-            }
-          });
-        }
+    const socket = socketIOClient("");
+    this.setState({ socket: socket });
+
+    socket.emit("joinGame", { gameID: this.state.gameID }, data => {
+      if (data) {
+        this.setState({
+          me: {
+            ready: data.ready,
+            heads: data.heads
+          }
+        });
       }
-    );
+    });
+
+    socket.on("enemyInfo", data => {
+      this.setState({
+        enemy: {
+          ready: data.ready,
+          heads: data.heads
+        }
+      });
+    });
   }
 
   render() {
     return (
       <div className="Game">
         <p>GameID: {this.state.gameID}</p>
-        {this.state.socket && (
-          <p>PlayerID: {this.state.socket.id}</p>
-        )}
+        {this.state.socket && <p>PlayerID: {this.state.socket.id}</p>}
         {this.state.me && (
           <div className="me">
             <p>Me Ready: {this.state.me.ready.toString()}</p>

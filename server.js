@@ -14,7 +14,7 @@ app.get("/api/validate/:gameID", (req, res) => {
     if (game.players.length > 1) {
       res.status(403).send({ error: "full" });
     } else {
-      res.status(200).send({ success: "game exists and has space"});
+      res.status(200).send({ success: "game exists and has space" });
     }
   } else {
     res.status(404).send({ error: "not found" });
@@ -41,9 +41,9 @@ io.on("connection", socket => {
 
   socket.on("joinGame", (data, callback) => {
     const game = games.filter(game => game.id == data.gameID)[0];
-    if(game) {
+    if (game) {
       if (game.players.length > 1) {
-        console.error("Game is full, but was validated")
+        console.error("Game is full, but was validated");
       } else {
         if (game.players.length == 1) {
           game.players.push({
@@ -65,10 +65,25 @@ io.on("connection", socket => {
         callback({
           ready: false,
           heads: game.players[game.players.length - 1].heads
-        })
+        });
+
+        if (game.players.length == 2) {
+          // both are connected
+          // Send enemy info to latest
+          socket.emit("enemyInfo", {
+            ready: game.players[0].ready,
+            heads: game.players[0].heads
+          });
+
+          // Send latest info to enemy
+          io.to(game.players[0].id).emit("enemyInfo", {
+            ready: game.players[1].ready,
+            heads: game.players[1].heads
+          });
+        }
       }
     } else {
-      console.error("Game does not exist, but was validated")
+      console.error("Game does not exist, but was validated");
     }
   });
 });
