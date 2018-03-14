@@ -1,5 +1,8 @@
-import React, { Component } from "react";
-import socketIOClient from "socket.io-client";
+import React, { Component } from 'react';
+import socketIOClient from 'socket.io-client';
+
+import LockableButton from './LockableButton.js';
+import MockLockableButton from './MockLockableButton.js';
 
 class Game extends Component {
   constructor(props) {
@@ -10,16 +13,16 @@ class Game extends Component {
       me: null,
       enemy: null,
       flipping: false,
-      winner: "",
+      winner: '',
       winStatus: null
     };
   }
 
   componentDidMount() {
-    const socket = socketIOClient("");
+    const socket = socketIOClient('');
     this.setState({ socket: socket });
 
-    socket.emit("joinGame", { gameID: this.state.gameID }, data => {
+    socket.emit('joinGame', { gameID: this.state.gameID }, data => {
       if (data) {
         this.setState({
           me: {
@@ -30,7 +33,7 @@ class Game extends Component {
       }
     });
 
-    socket.on("enemyInfo", data => {
+    socket.on('enemyInfo', data => {
       this.setState({
         enemy: {
           ready: data.ready,
@@ -39,7 +42,7 @@ class Game extends Component {
       });
     });
 
-    socket.on("enemyReady", () => {
+    socket.on('enemyReady', () => {
       this.setState(s => ({
         enemy: {
           ...s.enemy,
@@ -48,7 +51,7 @@ class Game extends Component {
       }));
     });
 
-    socket.on("enemyLeft", () => {
+    socket.on('enemyLeft', () => {
       // Enemy is null of course!
       // Also, flipping, winner, your readiness, and winStatus need to be reset, as all context is now different
       this.setState(s => ({
@@ -58,12 +61,12 @@ class Game extends Component {
         },
         enemy: null,
         flipping: false,
-        winner: "",
+        winner: '',
         winStatus: null
       }));
     });
 
-    socket.on("flipping", () => {
+    socket.on('flipping', () => {
       this.setState({ flipping: true });
     });
 
@@ -71,19 +74,19 @@ class Game extends Component {
     // these two need to check if an enemy is actually present before applying
     // their changes, even though the server does check for this as well.
 
-    socket.on("winDecided", headsWin => {
+    socket.on('winDecided', headsWin => {
       if (this.state.enemy) {
-        this.setState({ winner: headsWin ? "heads" : "tails" });
+        this.setState({ winner: headsWin ? 'heads' : 'tails' });
       }
     });
 
-    socket.on("winStatus", status => {
+    socket.on('winStatus', status => {
       if (this.state.enemy) {
         this.setState({ winStatus: status });
       }
     });
 
-    socket.on("reset", () => {
+    socket.on('reset', () => {
       this.setState(s => ({
         flipping: false,
         me: {
@@ -99,7 +102,7 @@ class Game extends Component {
   }
 
   ready() {
-    this.state.socket.emit("ready", () => {
+    this.state.socket.emit('ready', () => {
       this.setState(s => ({
         me: {
           ...s.me,
@@ -116,19 +119,30 @@ class Game extends Component {
         {this.state.socket && <p>PlayerID: {this.state.socket.id}</p>}
         {this.state.me && (
           <div className="me">
-            <p>Me Ready: {this.state.me.ready.toString()}</p>
-            <p>Me: {this.state.me.heads ? "heads" : "tails"}</p>
+            <p>Me: {this.state.me.heads ? 'heads' : 'tails'}</p>
+            <LockableButton
+              clicked={this.state.me.ready}
+              onClick={this.ready.bind(this)}
+              clickedText="Ready"
+              lockedText="Flipping"
+              locked={this.state.flipping}>
+              Ready Up
+            </LockableButton>
           </div>
         )}
         {this.state.enemy && (
           <div className="enemy">
-            <p>Enemy Ready: {this.state.enemy.ready.toString()}</p>
-            <p>Enemy: {this.state.enemy.heads ? "heads" : "tails"}</p>
+            <p>Enemy: {this.state.enemy.heads ? 'heads' : 'tails'}</p>
+            <MockLockableButton
+              clicked={this.state.enemy.ready}
+              clickedText="Ready"
+              lockedText="Flipping"
+              locked={this.state.flipping}>
+              Not Ready
+            </MockLockableButton>
           </div>
         )}
-        {!this.state.flipping && (
-          <button onClick={this.ready.bind(this)}>Ready</button>
-        )}
+
         {this.state.winner && <h2>Winner: {this.state.winner}</h2>}
         {this.state.winStatus && <h1>Winner</h1>}
       </div>

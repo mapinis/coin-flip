@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import "./App.css";
+import React, { Component } from 'react';
+import './App.css';
 
-import Game from "./components/Game.js";
+import Game from './components/Game.js';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputtedID: "",
-      gameID: ""
+      inputtedID: '',
+      gameID: ''
     };
   }
 
@@ -22,7 +22,7 @@ class App extends Component {
   };
 
   createGame() {
-    this.callAPI("/api/create")
+    this.callAPI('/api/create')
       .then(res => {
         this.setState({ inputtedID: res.newGameID });
         this.validateGame.bind(this)();
@@ -34,7 +34,7 @@ class App extends Component {
     if (event) {
       event.preventDefault();
     }
-    this.callAPI("/api/validate/" + this.state.inputtedID)
+    this.callAPI('/api/validate/' + this.state.inputtedID)
       .then(res => {
         if (res.error) {
           console.log(res.error);

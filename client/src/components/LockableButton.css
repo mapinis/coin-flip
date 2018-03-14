@@ -1,0 +1,25 @@
+button.clickable.unclicked {
+  border: 1px black solid;
+  color: black;
+}
+
+button.clickable.clicked {
+  border: 1px rgb(4, 187, 19) solid;
+  color: rgb(4, 187, 19);
+}
+
+button.clickable:hover {
+  transform: scale(1.02);
+  border-color: rgb(4, 187, 19);
+  color: rgb(4, 187, 19);
+}
+
+button.locked {
+  border-color: black;
+  color: black;
+  cursor: default;
+}
+
+button.locked:hover {
+  transform: scale(1);
+}

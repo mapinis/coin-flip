@@ -1,0 +1,21 @@
+.mock button.clickable:hover {
+  transform: scale(1);
+  border-color: black;
+  color: black;
+}
+
+.mock button.clickable.clicked:hover {
+  transform: scale(1);
+  border-color: rgb(4, 187, 19);
+  color: rgb(4, 187, 19);
+}
+
+.mock button.locked {
+  cursor: default;
+  border: 0;
+}
+
+.mock button.clickable {
+  cursor: default;
+  border: 0;
+}

@@ -25,18 +25,6 @@ button {
   border: 1px black solid;
 }
 
-button.unclicked {
-  border: 1px black solid;
-  color: black;
-}
-
-button.clicked {
-  border: 1px rgb(4, 187, 19) solid;
-  color: rgb(4, 187, 19);
-}
-
 button:hover {
   transform: scale(1.02);
-  border-color: rgb(4, 187, 19);
-  color: rgb(4, 187, 19);
 }
