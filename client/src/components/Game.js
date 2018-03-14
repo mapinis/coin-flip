@@ -48,21 +48,58 @@ class Game extends Component {
       }));
     });
 
+    socket.on("enemyLeft", () => {
+      // Enemy is null of course!
+      // Also, flipping, winner, your readiness, and winStatus need to be reset, as all context is now different
+      this.setState(s => ({
+        me: {
+          ...s.me,
+          ready: false
+        },
+        enemy: null,
+        flipping: false,
+        winner: "",
+        winStatus: null
+      }));
+    });
+
     socket.on("flipping", () => {
       this.setState({ flipping: true });
     });
 
+    // Because there is a chance that enemy leaves mid-data-transfer,
+    // these two need to check if an enemy is actually present before applying
+    // their changes, even though the server does check for this as well.
+
     socket.on("winDecided", headsWin => {
-      this.setState({ winner: headsWin ? "heads" : "tails" });
+      if (this.state.enemy) {
+        this.setState({ winner: headsWin ? "heads" : "tails" });
+      }
     });
 
     socket.on("winStatus", status => {
-      this.setState({ winStatus: status });
+      if (this.state.enemy) {
+        this.setState({ winStatus: status });
+      }
+    });
+
+    socket.on("reset", () => {
+      this.setState(s => ({
+        flipping: false,
+        me: {
+          ...s.me,
+          ready: false
+        },
+        enemy: {
+          ...s.enemy,
+          ready: false
+        }
+      }));
     });
   }
 
   ready() {
-    this.state.socket.emit("ready", { gameID: this.state.gameID }, () => {
+    this.state.socket.emit("ready", () => {
       this.setState(s => ({
         me: {
           ...s.me,

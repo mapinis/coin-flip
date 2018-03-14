@@ -22,6 +22,7 @@ button {
   background-color: transparent;
   outline: none;
   border-style: solid;
+  border: 1px black solid;
 }
 
 button.unclicked {

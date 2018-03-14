@@ -6,6 +6,7 @@ const port = process.env.PORT || 8080;
 app.use(require("morgan")("dev"));
 
 let games = [];
+let idGameIDLookup = {};
 
 app.get("/api/validate/:gameID", (req, res) => {
   let found = false;
@@ -59,6 +60,7 @@ io.on("connection", socket => {
           });
         }
 
+        idGameIDLookup[socket.id] = game.id;
         socket.join(game.id);
         console.log("User joined " + game.id);
 
@@ -87,8 +89,8 @@ io.on("connection", socket => {
     }
   });
 
-  socket.on("ready", (data, callback) => {
-    const game = games.filter(game => game.id == data.gameID)[0];
+  socket.on("ready", callback => {
+    const game = games.filter(game => game.id == idGameIDLookup[socket.id])[0];
     if (game) {
       for (player of game.players) {
         if (player.id == socket.id) {
@@ -96,7 +98,7 @@ io.on("connection", socket => {
           callback();
           console.log("User in " + game.id + " changed ready state");
         } else {
-          io.to(player.id).emit("enemyReady", null);
+          io.to(player.id).emit("enemyReady");
           console.log(
             "Enemy in " + game.id + " has been notified of ready state change"
           );
@@ -105,15 +107,48 @@ io.on("connection", socket => {
 
       if (game.players[0].ready && game.players[1] && game.players[1].ready) {
         // Time to see who wins
-        io.to(game.id).emit("flipping", null);
-        headsWin = Math.random > 0.5;
+        io.to(game.id).emit("flipping");
+        headsWin = Math.random() > 0.5;
         console.log((headsWin ? "heads" : "tails") + " has won in " + game.id);
-        io.to(game.id).emit("winDecided", headsWin);
-        for (player of game.players) {
-          if (player.heads == headsWin) {
-            io.to(player.id).emit("winStatus", true);
+
+        // Wait for 3 seconds, that's the flipping time
+        setTimeout(() => {
+          if (game.players.length > 1) {
+            // Make sure that everyone is still here, as people can leave mid-flipping
+            io.to(game.id).emit("winDecided", headsWin);
+            for (player of game.players) {
+              if (player.heads == headsWin) {
+                io.to(player.id).emit("winStatus", true);
+              } else {
+                io.to(player.id).emit("winStatus", false);
+              }
+            }
+
+            // Resetting
+            io.to(game.id).emit("reset");
+            for (player of game.players) {
+              player.ready = false;
+            }
           }
-        }
+        }, 3000);
+      }
+    }
+  });
+
+  socket.on("disconnect", () => {
+    const game = games.filter(game => game.id == idGameIDLookup[socket.id])[0];
+    if (game) {
+      game.players = game.players.filter(player => player.id != socket.id); // Keep the player whose id is not this socket's
+      console.log("User disconnected, left " + game.id);
+
+      if (game.players.length == 0) {
+        // Remove game if there are none of these players
+        games.splice(games.indexOf(game), 1);
+      } else {
+        // Make the other player not ready
+        game.players[0].ready = false;
+        // Tell him or her that their enemy has left
+        io.to(game.players[0].id).emit("enemyLeft");
       }
     }
   });
