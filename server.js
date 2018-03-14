@@ -37,7 +37,7 @@ app.get("/api/create", (req, res) => {
 });
 
 io.on("connection", socket => {
-  console.log("A user has connected");
+  console.log("User connected");
 
   socket.on("joinGame", (data, callback) => {
     const game = games.filter(game => game.id == data.gameID)[0];
@@ -59,8 +59,8 @@ io.on("connection", socket => {
           });
         }
 
-        console.log("A user has joined a game");
         socket.join(game.id);
+        console.log("User joined " + game.id);
 
         callback({
           ready: false,
@@ -84,6 +84,24 @@ io.on("connection", socket => {
       }
     } else {
       console.error("Game does not exist, but was validated");
+    }
+  });
+
+  socket.on("ready", (data, callback) => {
+    const game = games.filter(game => game.id == data.gameID)[0];
+    if (game) {
+      for (player of game.players) {
+        if (player.id == socket.id) {
+          player.ready = !player.ready;
+          callback();
+          console.log("User in " + game.id + " changed ready state")
+        } else {
+          io.to(player.id).emit("enemyReady", null);
+          console.log("Enemy in " + game.id + " has been notified of ready state change")
+        }
+      }
+
+      // Check if both are ready and then flip coin
     }
   });
 });

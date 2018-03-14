@@ -35,6 +35,26 @@ class Game extends Component {
         }
       });
     });
+
+    socket.on("enemyReady", () => {
+      this.setState(s => ({
+        enemy: {
+          ...s.enemy,
+          ready: !s.enemy.ready
+        }
+      }))
+    });
+  }
+
+  ready() {
+    this.state.socket.emit("ready", {gameID: this.state.gameID}, () => {
+      this.setState(s => ({
+        me: {
+          ...s.me,
+          ready: !s.me.ready
+        }
+      }));
+    });
   }
 
   render() {
@@ -45,6 +65,7 @@ class Game extends Component {
         {this.state.me && (
           <div className="me">
             <p>Me Ready: {this.state.me.ready.toString()}</p>
+            <button onClick={this.ready.bind(this)}>Ready</button>
             <p>Me Heads: {this.state.me.heads.toString()}</p>
           </div>
         )}
