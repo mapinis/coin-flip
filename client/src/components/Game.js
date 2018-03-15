@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client';
+import './Game.css';
 
 import LockableButton from './LockableButton.js';
 import MockLockableButton from './MockLockableButton.js';
+
 
 class Game extends Component {
   constructor(props) {
@@ -114,37 +116,41 @@ class Game extends Component {
 
   render() {
     return (
-      <div className="Game">
-        <p>GameID: {this.state.gameID}</p>
-        {this.state.socket && <p>PlayerID: {this.state.socket.id}</p>}
-        {this.state.me && (
-          <div className="me">
-            <p>Me: {this.state.me.heads ? 'heads' : 'tails'}</p>
-            <LockableButton
-              clicked={this.state.me.ready}
-              onClick={this.ready.bind(this)}
-              clickedText="Ready"
-              lockedText="Flipping"
-              locked={this.state.flipping}>
-              Ready Up
-            </LockableButton>
-          </div>
-        )}
-        {this.state.enemy && (
-          <div className="enemy">
-            <p>Enemy: {this.state.enemy.heads ? 'heads' : 'tails'}</p>
-            <MockLockableButton
-              clicked={this.state.enemy.ready}
-              clickedText="Ready"
-              lockedText="Flipping"
-              locked={this.state.flipping}>
-              Not Ready
-            </MockLockableButton>
-          </div>
-        )}
+      <div className="game">
+        <div className="section me">
+          {this.state.me && (
+            <div>
+              <p>Me: {this.state.me.heads ? 'heads' : 'tails'}</p>
+              <LockableButton
+                clicked={this.state.me.ready}
+                onClick={this.ready.bind(this)}
+                clickedText="Ready"
+                lockedText="Flipping"
+                locked={this.state.flipping}>
+                Ready Up
+              </LockableButton>
+            </div>
+          )}
+        </div>
+        <div className="section flipzone">
+        </div>
+        <div className="section enemy">
+          {this.state.enemy && (
+            <div>
+              <p>Enemy: {this.state.enemy.heads ? 'heads' : 'tails'}</p>
+              <MockLockableButton
+                clicked={this.state.enemy.ready}
+                clickedText="Ready"
+                lockedText="Flipping"
+                locked={this.state.flipping}>
+                Not Ready
+              </MockLockableButton>
+            </div>
+          )}
+        </div>
 
-        {this.state.winner && <h2>Winner: {this.state.winner}</h2>}
-        {this.state.winStatus && <h1>Winner</h1>}
+        {/*this.state.winner && <h2>Winner: {this.state.winner}</h2>}
+        {this.state.winStatus && <h1>Winner</h1>*/}
       </div>
     );
   }

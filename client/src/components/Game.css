@@ -1,0 +1,25 @@
+.game {
+  display: flex;
+  flex-flow: row nowrap;
+  align-content: stretch;
+  align-items: stretch;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.section {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  border: 0px black solid;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  bottom: 0;
+}
+
+.flipzone {
+  background-color: rgb(219, 219, 219);
+}
