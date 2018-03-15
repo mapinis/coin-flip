@@ -18,19 +18,12 @@
   height: 100vh;
   top: 0;
   bottom: 0;
+  text-align: center;
+  padding: 0px 50px 0px 50px;
 }
 
 .flipzone {
   background-color: rgb(233, 233, 233);
   border-right: 1px black solid;
   border-left: 1px black solid;
-}
-
-.inner {
-  text-align: center;
-}
-
-.inner img {
-  height: 20%;
-  width: auto;
 }

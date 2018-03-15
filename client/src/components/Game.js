@@ -139,13 +139,16 @@ class Game extends Component {
                 locked={this.state.flipping}>
                 Ready Up
               </LockableButton>
-              {this.state.winner && this.state.winStatus && (
-                <h1>Winner!</h1>
-              )}
+              {this.state.winner && this.state.winStatus && <h1>Winner!</h1>}
             </div>
           )}
         </div>
         <div className="section inner flipzone">
+          {!this.state.flipping &&
+            !this.state.winner && (
+              <h1>Both sides need to ready up before flipping can begin</h1>
+            )}
+          {this.state.flipping && <h1>Flipping</h1>}
           {this.state.winner &&
             !this.state.flipping && (
               <div>
@@ -160,9 +163,21 @@ class Game extends Component {
                 <h1>{this.state.winner} wins!</h1>
               </div>
             )}
-          {this.state.flipping && <h1>Flipping</h1>}
         </div>
         <div className="section enemy">
+          {!this.state.enemy && (
+            <div>
+              <p>
+                <h1>Invite a Friend</h1>
+              </p>
+              <p>
+                <h2>
+                  Send them a link to this site and tell them to use code{' '}
+                  {this.state.gameID} to join
+                </h2>
+              </p>
+            </div>
+          )}
           {this.state.enemy && (
             <div className="inner">
               <img
@@ -181,15 +196,10 @@ class Game extends Component {
                 locked={this.state.flipping}>
                 Not Ready
               </MockLockableButton>
-              {this.state.winner && !this.state.winStatus && (
-                <h1>Winner!</h1>
-              )}
+              {this.state.winner && !this.state.winStatus && <h1>Winner!</h1>}
             </div>
           )}
         </div>
-
-        {/*this.state.winner && <h2>Winner: {this.state.winner}</h2>}
-        {this.state.winStatus && <h1>Winner</h1>*/}
       </div>
     );
   }

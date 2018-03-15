@@ -12,6 +12,10 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    document.title = 'Coin Flip';
+  }
+
   callAPI = async (url, options = null) => {
     const response = await fetch(url, options);
     const body = await response.json();
