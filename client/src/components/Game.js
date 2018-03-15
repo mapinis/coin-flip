@@ -5,6 +5,8 @@ import './Game.css';
 import LockableButton from './LockableButton.js';
 import MockLockableButton from './MockLockableButton.js';
 
+import coinHeads from '../rec/heads.svg';
+import coinTails from '../rec/tails.svg';
 
 class Game extends Component {
   constructor(props) {
@@ -119,8 +121,16 @@ class Game extends Component {
       <div className="game">
         <div className="section me">
           {this.state.me && (
-            <div>
-              <p>Me: {this.state.me.heads ? 'heads' : 'tails'}</p>
+            <div className="inner">
+              <img
+                alt={
+                  this.state.me.heads
+                    ? 'Coin with side heads'
+                    : 'Coin with side tails'
+                }
+                src={this.state.me.heads ? coinHeads : coinTails}
+              />
+              <h1>You</h1>
               <LockableButton
                 clicked={this.state.me.ready}
                 onClick={this.ready.bind(this)}
@@ -132,12 +142,19 @@ class Game extends Component {
             </div>
           )}
         </div>
-        <div className="section flipzone">
-        </div>
+        <div className="section flipzone" />
         <div className="section enemy">
           {this.state.enemy && (
-            <div>
-              <p>Enemy: {this.state.enemy.heads ? 'heads' : 'tails'}</p>
+            <div className="inner">
+              <img
+                alt={
+                  this.state.enemy.heads
+                    ? 'Coin with side heads'
+                    : 'Coin with side tails'
+                }
+                src={this.state.enemy.heads ? coinHeads : coinTails}
+              />
+              <h1>The Enemy</h1>
               <MockLockableButton
                 clicked={this.state.enemy.ready}
                 clickedText="Ready"

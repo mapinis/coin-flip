@@ -21,5 +21,16 @@
 }
 
 .flipzone {
-  background-color: rgb(219, 219, 219);
+  background-color: rgb(233, 233, 233);
+  border-right: 1px black solid;
+  border-left: 1px black solid;
+}
+
+.inner {
+  text-align: center;
+}
+
+.inner img {
+  height: 20%;
+  width: auto;
 }
