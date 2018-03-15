@@ -71,7 +71,7 @@ class Game extends Component {
     });
 
     socket.on('flipping', () => {
-      this.setState({ flipping: true });
+      this.setState({ flipping: true, winner: '' });
     });
 
     // Because there is a chance that enemy leaves mid-data-transfer,
@@ -80,7 +80,7 @@ class Game extends Component {
 
     socket.on('winDecided', headsWin => {
       if (this.state.enemy) {
-        this.setState({ winner: headsWin ? 'heads' : 'tails' });
+        this.setState({ winner: headsWin ? 'Heads' : 'Tails' });
       }
     });
 
@@ -125,8 +125,8 @@ class Game extends Component {
               <img
                 alt={
                   this.state.me.heads
-                    ? 'Coin with side heads'
-                    : 'Coin with side tails'
+                    ? 'Your coin with side heads'
+                    : 'Your coin with side tails'
                 }
                 src={this.state.me.heads ? coinHeads : coinTails}
               />
@@ -139,18 +139,37 @@ class Game extends Component {
                 locked={this.state.flipping}>
                 Ready Up
               </LockableButton>
+              {this.state.winner && this.state.winStatus && (
+                <h1>Winner!</h1>
+              )}
             </div>
           )}
         </div>
-        <div className="section flipzone" />
+        <div className="section inner flipzone">
+          {this.state.winner &&
+            !this.state.flipping && (
+              <div>
+                <img
+                  alt={
+                    this.state.winner === 'Heads'
+                      ? 'Winning coin with side heads'
+                      : 'Winning coin with side tails'
+                  }
+                  src={this.state.winner === 'Heads' ? coinHeads : coinTails}
+                />
+                <h1>{this.state.winner} wins!</h1>
+              </div>
+            )}
+          {this.state.flipping && <h1>Flipping</h1>}
+        </div>
         <div className="section enemy">
           {this.state.enemy && (
             <div className="inner">
               <img
                 alt={
                   this.state.enemy.heads
-                    ? 'Coin with side heads'
-                    : 'Coin with side tails'
+                    ? 'Enemy coin with side heads'
+                    : 'Enemy coin with side tails'
                 }
                 src={this.state.enemy.heads ? coinHeads : coinTails}
               />
@@ -162,6 +181,9 @@ class Game extends Component {
                 locked={this.state.flipping}>
                 Not Ready
               </MockLockableButton>
+              {this.state.winner && !this.state.winStatus && (
+                <h1>Winner!</h1>
+              )}
             </div>
           )}
         </div>
