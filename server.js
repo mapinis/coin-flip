@@ -109,7 +109,7 @@ io.on('connection', socket => {
         // Time to see who wins
         io.to(game.id).emit('flipping');
         headsWin = Math.random() > 0.5;
-        console.log((headsWin ? 'Heads' : 'Tails') + ' has won in ' + game.id);
+        console.log((headsWin ? 'Heads' : 'Tails') + ' win in ' + game.id);
 
         // Wait for 3 seconds, that's the flipping time
         setTimeout(() => {
@@ -130,7 +130,7 @@ io.on('connection', socket => {
               player.ready = false;
             }
           }
-        }, 3000);
+        }, 1500);
       }
     }
   });

@@ -2,13 +2,22 @@
   font-family: sans-serif;
 }
 
+.index {
+  display: flex;
+  flex-flow: column nowrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+
 button {
   display: block;
   text-transform: uppercase;
   text-align: center;
   width: 200px;
   font-family: Arial, Helvetica, sans-serif;
-  margin: 50px;
+  margin: 10px;
   padding: 15px 20px;
   letter-spacing: 3px;
   font-size: 20px;
