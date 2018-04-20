@@ -1,4 +1,5 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
@@ -154,6 +155,8 @@ io.on('connection', socket => {
     }
   });
 });
+
+app.get('/*', express.static("./client/build/"));
 
 server.listen(port, () => {
   console.log('Listening on port ' + port);
