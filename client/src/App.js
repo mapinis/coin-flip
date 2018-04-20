@@ -23,7 +23,7 @@ class App extends Component {
   };
 
   createGame() {
-    this.callAPI('/api/create').then(res => {
+    this.callAPI('http://localhost:8080/api/create').then(res => {
       this.setState({ inputtedID: res.newGameID });
       this.validateGame.bind(this)();
     });
@@ -33,7 +33,7 @@ class App extends Component {
     if (event) {
       event.preventDefault();
     }
-    this.callAPI('/api/validate/' + this.state.inputtedID).then(res => {
+    this.callAPI('http://localhost:8080/api/validate/' + this.state.inputtedID).then(res => {
       if (res.error) {
         this.setState({
           idError: 'error: ' + res.error
